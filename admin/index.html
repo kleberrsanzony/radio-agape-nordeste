@@ -7,6 +7,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/admin.css">
+    <style>
+        /* CSS de Emergência para Login */
+        body { background-color: #0B0D14; color: #EAE6DC; font-family: 'DM Sans', sans-serif; margin: 0; }
+        .auth-wrapper { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #0B0D14 0%, #141720 100%); }
+        .auth-card { background-color: #141720; padding: 40px; border-radius: 8px; border: 1px solid #1E2130; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
+        .auth-logo { font-size: 24px; font-weight: 700; color: #C9A84C; margin-bottom: 10px; }
+        .auth-subtitle { color: #9A9080; font-size: 14px; margin-bottom: 30px; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #9A9080; }
+        .form-group input { width: 100%; padding: 12px; background-color: #1E2130; border: 1px solid #252A3A; border-radius: 8px; color: #EAE6DC; box-sizing: border-box; }
+        .btn-primary { width: 100%; padding: 12px; background-color: #C9A84C; color: #0B0D14; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { background-color: #E8CC80; }
+        .alert.error { padding: 12px; border-radius: 8px; font-size: 14px; margin-top: 15px; background-color: rgba(255, 76, 76, 0.1); color: #ff4c4c; border: 1px solid #ff4c4c; }
+    </style>
     
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
