@@ -1,0 +1,73 @@
+<!-- PROGRAMS SECTION COMPONENT -->
+<section class="programs-section" id="programas">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Na Grade</div>
+      <h2 class="section-title">Nossos Programas</h2>
+      <p class="section-desc">Conteúdo pensado para edificar sua vida espiritual e familiar</p>
+    </div>
+    <div id="programs-grid-container" class="programs-grid">
+      <!-- Programas serão injetados aqui -->
+      <div class="program-card reveal">
+        <div class="program-banner">
+          <div class="prog-emoji">📻</div>
+        </div>
+        <div class="program-body">
+          <div class="program-name">Carregando...</div>
+          <div class="program-desc">Buscando programas no servidor...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    function applyProgramsConfig() {
+      const config = ADMIN_DATA.load('programs_config', { programs: [] });
+      const grid = document.getElementById('programs-grid-container');
+      if (!grid || !config.programs || config.programs.length === 0) return;
+
+      grid.innerHTML = '';
+      config.programs
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'program-card reveal visible';
+          
+          const bannerStyle = p.image ? `style="background-image: url(${p.image}); background-size: cover; background-position: center;"` : '';
+          const emoji = p.category ? getEmojiForCategory(p.category) : '📻';
+
+          card.innerHTML = `
+            <div class="program-banner" ${bannerStyle}>
+              ${p.image ? '' : `<div class="prog-emoji">${emoji}</div>`}
+              <span class="prog-badge">${p.category || 'Programa'}</span>
+            </div>
+            <div class="program-body">
+              <div class="program-name">${p.name}</div>
+              <div class="program-host">com ${p.presenter}</div>
+              <div class="program-desc">${p.description}</div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+    }
+
+    function getEmojiForCategory(cat) {
+      const map = {
+        'Devoção': '🙏',
+        'Gospel': '🎵',
+        'Pregação': '📖',
+        'Família': '❤️',
+        'Jovem': '🎤',
+        'Notícias': '📰'
+      };
+      return map[cat] || '📻';
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyProgramsConfig();
+    }
+    window.addEventListener('adminDataReady', applyProgramsConfig);
+  })();
+</script>

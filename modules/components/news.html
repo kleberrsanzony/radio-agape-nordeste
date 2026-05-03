@@ -1,0 +1,63 @@
+<!-- NEWS SECTION COMPONENT -->
+<section class="news-section" id="noticias">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Destaques</div>
+      <h2 class="section-title">Notícias & Novidades</h2>
+    </div>
+    <div id="news-grid-container" class="news-grid">
+      <!-- Notícias serão injetadas aqui -->
+      <div class="news-card featured reveal">
+        <div class="news-thumb featured">🎶</div>
+        <div class="news-body">
+          <div class="news-cat">Aguarde</div>
+          <div class="news-title">Carregando últimas notícias...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    function applyNewsConfig() {
+      const config = ADMIN_DATA.load('news_config', { news: [] });
+      const grid = document.getElementById('news-grid-container');
+      if (!grid || !config.news || config.news.length === 0) return;
+
+      grid.innerHTML = '';
+      
+      // Ordena por destaque primeiro (se existir), depois por data
+      const sortedNews = [...config.news].sort((a, b) => {
+        const featA = a.featured ? 1 : 0;
+        const featB = b.featured ? 1 : 0;
+        return featB - featA;
+      });
+
+      sortedNews.slice(0, 3).forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = `news-card ${item.featured ? 'featured' : ''} reveal visible`;
+        
+        const thumbStyle = item.image ? `style="background-image: url(${item.image}); background-size: cover; background-position: center;"` : '';
+        const thumbContent = item.image ? '' : (item.featured ? '🎶' : '📻');
+
+        card.innerHTML = `
+          <div class="news-thumb ${item.featured ? 'featured' : ''}" ${thumbStyle}>
+            ${thumbContent}
+          </div>
+          <div class="news-body">
+            <div class="news-cat">${item.category || (item.featured ? 'Destaque' : 'Notícia')}</div>
+            <div class="news-title">${item.title}</div>
+            <div class="news-meta">${item.date || 'Recente'} · por ${item.author || 'Redação'}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyNewsConfig();
+    }
+    window.addEventListener('adminDataReady', applyNewsConfig);
+  })();
+</script>

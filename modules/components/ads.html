@@ -1,0 +1,56 @@
+<!-- ADS SECTION COMPONENT -->
+<section class="ads-section" id="publicidade">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Para Empresas</div>
+      <h2 id="ads-title-text" class="section-title">Anuncie Conosco</h2>
+      <p id="ads-desc-text" class="section-desc">Alcance milhares de ouvintes todos os dias com sua marca ou ministério</p>
+    </div>
+    <div id="ads-grid-container" class="ads-grid">
+      <!-- Planos serão injetados aqui -->
+      <div class="ad-card reveal">
+        <div class="ad-icon">📻</div>
+        <div class="ad-title">Carregando planos...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    function applyAdsConfig() {
+      const config = ADMIN_DATA.load('ads_config', { plans: [] });
+      const grid = document.getElementById('ads-grid-container');
+      if (!grid || !config.plans || config.plans.length === 0) return;
+
+      grid.innerHTML = '';
+      config.plans.forEach(plan => {
+        const card = document.createElement('div');
+        card.className = `ad-card reveal visible ${plan.is_popular ? 'popular' : ''}`;
+        
+        const emoji = getEmojiForPlan(plan.title || '');
+
+        card.innerHTML = `
+          <div class="ad-icon">${emoji}</div>
+          <div class="ad-label">${plan.is_popular ? 'Plano Popular' : 'Publicidade'}</div>
+          <div class="ad-title">${plan.title || 'Plano de Anúncio'}</div>
+          <div class="ad-price">${plan.price || 'Sob consulta'}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function getEmojiForPlan(name) {
+      if (name.toLowerCase().includes('spot')) return '📻';
+      if (name.toLowerCase().includes('patrocínio')) return '🎙️';
+      if (name.toLowerCase().includes('digital') || name.toLowerCase().includes('site')) return '🌐';
+      if (name.toLowerCase().includes('combo') || name.toLowerCase().includes('completo')) return '📦';
+      return '💰';
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyAdsConfig();
+    }
+    window.addEventListener('adminDataReady', applyAdsConfig);
+  })();
+</script>

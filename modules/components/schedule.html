@@ -1,0 +1,113 @@
+<!-- SCHEDULE SECTION COMPONENT -->
+<section class="schedule-section" id="programacao">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Hoje na Rádio</div>
+      <h2 class="section-title">Programação Completa</h2>
+      <p class="section-desc">Acompanhe o que está no ar agora e o que vem a seguir</p>
+    </div>
+    <div id="schedule-tabs-container" class="schedule-tabs reveal">
+      <button class="tab active" data-day="0">Segunda</button>
+      <button class="tab" data-day="1">Terça</button>
+      <button class="tab" data-day="2">Quarta</button>
+      <button class="tab" data-day="3">Quinta</button>
+      <button class="tab" data-day="4">Sexta</button>
+      <button class="tab" data-day="5">Sábado</button>
+      <button class="tab" data-day="6">Domingo</button>
+    </div>
+    <div id="schedule-grid-container" class="schedule-grid reveal">
+      <!-- Programs will be injected here -->
+      <div class="schedule-item live">
+        <div class="sch-time"><strong>07:00</strong>às 09:00</div>
+        <div>
+          <div class="sch-title">Carregando...</div>
+          <div class="sch-host">Aguarde um momento</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    let currentDay = new Date().getDay() - 1; // 0 = Segunda, 6 = Domingo
+    if (currentDay < 0) currentDay = 6; // Domingo
+
+    function renderPrograms() {
+      const config = ADMIN_DATA.load('schedule_config', { programs: [] });
+      const grid = document.getElementById('schedule-grid-container');
+      if (!grid) return;
+
+      const filteredPrograms = config.programs
+        .filter(p => p.day === currentDay)
+        .sort((a, b) => a.time.localeCompare(b.time));
+
+      if (filteredPrograms.length === 0) {
+        grid.innerHTML = `
+          <div class="schedule-item" style="justify-content: center; opacity: 0.7;">
+            <div style="text-align: center;">
+              <div class="sch-title">Nenhum programa cadastrado</div>
+              <div class="sch-host">Para este dia da semana</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = '';
+      filteredPrograms.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'schedule-item';
+        
+        // Determina se está ao vivo (simplificado: se a hora atual coincide)
+        const now = new Date();
+        const curTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        const endHour = parseInt(p.time.split(':')[0]) + Math.floor(p.duration / 60);
+        const endMin = parseInt(p.time.split(':')[1]) + (p.duration % 60);
+        const endTime = endHour.toString().padStart(2, '0') + ':' + endMin.toString().padStart(2, '0');
+        
+        const isLive = curTime >= p.time && curTime < endTime && (new Date().getDay() - 1 === p.day || (new Date().getDay() === 0 && p.day === 6));
+        
+        if (isLive) item.classList.add('live');
+
+        item.innerHTML = `
+          <div class="sch-time"><strong>${p.time || '00:00'}</strong>às ${endTime}</div>
+          <div>
+            <div class="sch-title">${p.name || 'Programa'}</div>
+            <div class="sch-host">${p.presenter || 'Apresentador'}</div>
+          </div>
+          ${isLive ? '<span class="sch-badge badge-live">● Ao vivo</span>' : ''}
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    function setupTabs() {
+      const tabs = document.querySelectorAll('#schedule-tabs-container .tab');
+      tabs.forEach(tab => {
+        const day = parseInt(tab.dataset.day);
+        if (day === currentDay) {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+        }
+
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentDay = day;
+          renderPrograms();
+        });
+      });
+    }
+
+    function initSchedule() {
+      setupTabs();
+      renderPrograms();
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      initSchedule();
+    }
+    window.addEventListener('adminDataReady', initSchedule);
+  })();
+</script>

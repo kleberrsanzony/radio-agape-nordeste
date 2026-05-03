@@ -1,0 +1,115 @@
+<!-- CONTACT SECTION COMPONENT -->
+<section class="contact-section" id="contato">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Fale Conosco</div>
+      <h2 class="section-title">Entre em Contato</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-form reveal">
+        <div class="form-group">
+          <label class="form-label">Seu nome</label>
+          <input type="text" class="form-input" placeholder="Ex: Maria Silva">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input type="email" class="form-input" placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assunto</label>
+          <select class="form-select">
+            <option value="">Selecione o assunto</option>
+            <option>Pedido de Música</option>
+            <option>Publicidade / Comercial</option>
+            <option>Parceria com Igreja</option>
+            <option>Programa / Entrevista</option>
+            <option>Elogios ou Sugestões</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mensagem</label>
+          <textarea class="form-textarea" placeholder="Escreva sua mensagem aqui..."></textarea>
+        </div>
+        <button class="btn-primary">Enviar Mensagem ✦</button>
+      </div>
+      <div class="contact-info reveal">
+        <div class="contact-info-title">Estamos aqui<br>para te ouvir</div>
+        <div class="contact-detail">
+          <div class="contact-icon">📍</div>
+          <div class="contact-detail-text">
+            <strong>Endereço</strong>
+            <span id="contact-address-text">Av. Agamenon Magalhães, 4444 — Recife, PE</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">📞</div>
+          <div class="contact-detail-text">
+            <strong>Telefone</strong>
+            <span id="contact-phone-text">(81) 3333-0000 · Seg–Sex 08h–18h</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">📩</div>
+          <div class="contact-detail-text">
+            <strong>E-mail</strong>
+            <span id="contact-email-text">contato@radiograca.com.br</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">💬</div>
+          <div class="contact-detail-text">
+            <strong>WhatsApp</strong>
+            <span id="contact-whatsapp-text">(81) 9 9999-0000</span>
+          </div>
+        </div>
+        <div>
+          <div class="form-label" style="margin-bottom: 0.8rem;">Redes Sociais</div>
+          <div id="contact-social-row" class="social-row">
+            <!-- Social buttons will be updated -->
+            <a id="social-instagram" href="#" class="social-btn" title="Instagram">📸</a>
+            <a id="social-facebook" href="#" class="social-btn" title="Facebook">👥</a>
+            <a id="social-youtube" href="#" class="social-btn" title="YouTube">▶</a>
+            <a id="social-twitter" href="#" class="social-btn" title="Twitter/X">🐦</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    function applyContactConfig() {
+      const config = ADMIN_DATA.load('contact_config');
+      if (!config) return;
+
+      const address = document.getElementById('contact-address-text');
+      const phone = document.getElementById('contact-phone-text');
+      const email = document.getElementById('contact-email-text');
+      const whatsapp = document.getElementById('contact-whatsapp-text');
+
+      if (config.address && address) address.textContent = config.address;
+      if (config.phone && phone) phone.textContent = config.phone;
+      if (config.email && email) email.textContent = config.email;
+      if (config.whatsapp && whatsapp) whatsapp.textContent = config.whatsapp;
+
+      if (config.social) {
+        const ig = document.getElementById('social-instagram');
+        const fb = document.getElementById('social-facebook');
+        const yt = document.getElementById('social-youtube');
+        const tw = document.getElementById('social-twitter');
+
+        if (config.social.instagram && ig) ig.href = config.social.instagram;
+        if (config.social.facebook && fb) fb.href = config.social.facebook;
+        if (config.social.youtube && yt) yt.href = config.social.youtube;
+        if (config.social.twitter && tw) tw.href = config.social.twitter;
+      }
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyContactConfig();
+    }
+    window.addEventListener('adminDataReady', applyContactConfig);
+  })();
+</script>

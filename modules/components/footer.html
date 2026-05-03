@@ -1,0 +1,91 @@
+<!-- FOOTER COMPONENT -->
+<footer id="main-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <div id="footer-logo-icon" class="nav-logo-icon">✦</div>
+          <span id="footer-logo-text" class="nav-logo-text">Rádio Ágape</span>
+        </div>
+        <p id="footer-about-text">A voz do evangelho no coração do Nordeste. Louvando a Deus com excelência.</p>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col1-title">Programação</h4>
+        <div id="footer-col1-links">
+          <a href="#">Grade Semanal</a>
+          <a href="#">Ao Vivo</a>
+          <a href="#">Programas</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col2-title">Conteúdo</h4>
+        <div id="footer-col2-links">
+          <a href="#">Músicas Top</a>
+          <a href="#">Pregações</a>
+          <a href="#">Notícias</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Institucional</h4>
+        <a href="#sobre">Sobre Nós</a>
+        <a href="#publicidade">Publicidade</a>
+        <a href="#contato">Contato</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div id="footer-copyright-text" class="footer-copy">© 2025 Rádio Ágape — Todos os direitos reservados</div>
+      <div class="footer-verse">"Cantai ao Senhor um cântico novo" — Sl 96:1</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function() {
+    function applyFooterConfig() {
+      const config = ADMIN_DATA.load('footer_config');
+      if (!config) return;
+
+      const footer = document.getElementById('main-footer');
+      const about = document.getElementById('footer-about-text');
+      const copyright = document.getElementById('footer-copyright-text');
+      const col1Title = document.getElementById('footer-col1-title');
+      const col2Title = document.getElementById('footer-col2-title');
+      const col1Links = document.getElementById('footer-col1-links');
+      const col2Links = document.getElementById('footer-col2-links');
+
+      if (config.about && about) about.textContent = config.about;
+      if (config.copyright && copyright) copyright.textContent = config.copyright;
+      
+      if (config.col1Title && col1Title) col1Title.textContent = config.col1Title;
+      if (config.col2Title && col2Title) col2Title.textContent = config.col2Title;
+
+      if (config.col1Links && col1Links) {
+        renderLinks(col1Links, config.col1Links);
+      }
+      if (config.col2Links && col2Links) {
+        renderLinks(col2Links, config.col2Links);
+      }
+
+      if (footer) {
+        if (config.bgColor) footer.style.backgroundColor = config.bgColor;
+        if (config.textColor) footer.style.color = config.textColor;
+      }
+    }
+
+    function renderLinks(container, links) {
+      container.innerHTML = '';
+      links.forEach(l => {
+        const parts = l.split('|');
+        const a = document.createElement('a');
+        a.textContent = parts[0];
+        a.href = parts[1] || '#';
+        container.appendChild(a);
+      });
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyFooterConfig();
+    }
+    window.addEventListener('adminDataReady', applyFooterConfig);
+  })();
+</script>

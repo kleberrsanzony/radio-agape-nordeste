@@ -1,0 +1,54 @@
+<!-- MUSIC SECTION COMPONENT -->
+<section class="music-section" id="musicas">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Mais Tocadas</div>
+      <h2 class="section-title">Top Músicas Gospel</h2>
+      <p class="section-desc">As mais pedidas e tocadas da semana pelos nossos ouvintes</p>
+    </div>
+    <div id="music-grid-container" class="music-grid">
+      <!-- Músicas serão injetadas aqui -->
+      <div class="music-card reveal">
+        <div class="music-cover">🎵</div>
+        <div class="music-rank">Carregando...</div>
+        <div class="music-name">Aguarde</div>
+        <div class="music-artist">...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    function applyMusicConfig() {
+      const config = ADMIN_DATA.load('music_config', { musics: [] });
+      const grid = document.getElementById('music-grid-container');
+      if (!grid || !config.musics || config.musics.length === 0) return;
+
+      grid.innerHTML = '';
+      config.musics.slice(0, 6).forEach((music, index) => {
+        const card = document.createElement('div');
+        card.className = 'music-card reveal visible';
+        
+        const coverStyle = music.cover ? `style="background-image: url(${music.cover}); background-size: cover; background-position: center;"` : '';
+        const coverContent = music.cover ? '' : '🎵';
+
+        card.innerHTML = `
+          <div class="music-cover" ${coverStyle}>
+            ${coverContent}
+            <div class="music-play-overlay" data-url="${music.url || ''}">▶</div>
+          </div>
+          <div class="music-rank">#${music.position || (index + 1)}</div>
+          <div class="music-name">${music.title}</div>
+          <div class="music-artist">${music.artist}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyMusicConfig();
+    }
+    window.addEventListener('adminDataReady', applyMusicConfig);
+  })();
+</script>

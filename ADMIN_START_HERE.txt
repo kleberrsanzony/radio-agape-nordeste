@@ -1,0 +1,44 @@
+==============================================================
+🎙️ RÁDIO ÁGAPE NORDESTE - GUIA DE INÍCIO RÁPIDO DO ADMIN 🎙️
+==============================================================
+
+Olá! O sistema administrativo agora funciona em nuvem utilizando o Supabase (PostgreSQL + Storage + Auth). Isso garante segurança profissional e sincronização automática em tempo real.
+
+Siga os passos abaixo para configurar o seu acesso e começar a usar.
+
+--------------------------------------------------------------
+PASSO 1: CONFIGURAÇÃO DE ACESSO (SUPABASE)
+--------------------------------------------------------------
+1. Acesse o painel do seu projeto no Supabase (https://supabase.com).
+2. Vá no menu "Authentication" -> "Users" e clique em "Add User" -> "Create new user".
+3. Insira o e-mail do administrador e uma senha forte.
+4. Após criado, copie o "User UID" (Um código longo e único).
+5. Vá no menu "Table Editor" -> clique na tabela "admins".
+6. Clique em "Insert row".
+7. Cole o "User UID" no campo 'id', e preencha o e-mail no campo 'email'. Salve.
+
+--------------------------------------------------------------
+PASSO 2: ACESSANDO O PAINEL
+--------------------------------------------------------------
+1. Abra o arquivo 'admin/index.html' no seu navegador.
+2. Na tela de login, insira o e-mail e a senha que você acabou de criar no Supabase.
+3. Se tudo estiver correto, você será redirecionado para o Dashboard.
+   (Nota: Se ocorrer um erro, verifique se seu UID foi corretamente inserido na tabela 'admins').
+
+--------------------------------------------------------------
+PASSO 3: MÓDULOS DE CONTEÚDO
+--------------------------------------------------------------
+* PLAYER: Configure a URL do streaming (Icecast/Shoutcast) para que a barra de música ao vivo funcione.
+* PROGRAMAÇÃO: Monte a grade da rádio.
+* NOTÍCIAS & MÚSICAS: Você pode enviar imagens (JPG/PNG). O painel faz upload automático para o Supabase Storage. Certifique-se que as imagens não sejam enormes (>5MB) para carregar rápido.
+* CONFIG GERAIS: Alterar telefones, e-mail e Instagram nestes campos atualizarão toda a página (rodapé e seção de contato).
+
+--------------------------------------------------------------
+SEGURANÇA E DADOS
+--------------------------------------------------------------
+- Todo o site usa a "Anon Key" do Supabase. Apenas usuários logados cujo UID esteja na tabela `admins` possuem permissão para modificar os dados (Graças ao sistema RLS - Row Level Security).
+- Caso o servidor do Supabase apresente instabilidade, o site público possui "Fallbacks" locais para não sair do ar.
+- Você não precisa mais "exportar JSON" para fazer backups. O banco PostgreSQL gerencia tudo com segurança e backups na própria plataforma do Supabase.
+
+Sucesso na rádio! 📻
+Equipe de Desenvolvimento.

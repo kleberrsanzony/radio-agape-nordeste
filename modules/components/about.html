@@ -1,0 +1,64 @@
+<!-- ABOUT SECTION COMPONENT -->
+<section class="about-section">
+  <div class="container">
+    <div class="about-inner">
+      <div class="reveal">
+        <div id="about-tag" class="section-tag">Nossa Missão</div>
+        <div id="about-verse-text" class="about-verse">
+          "Como é agradável cantar louvores ao nosso Deus, como é bom e apropriado louvar a ele!"
+        </div>
+        <div id="about-verse-ref-text" class="about-verse-ref">— Salmos 147:1</div>
+        <div id="about-main-text" class="about-text">
+          A Rádio Ágape nasceu com o propósito de levar a mensagem do evangelho a todos os lares. Unindo música gospel, pregações e programas de família.
+        </div>
+      </div>
+      <div id="about-stats-container" class="about-stats reveal">
+        <div class="stat-card">
+          <div id="stat-listeners" class="stat-num">50k+</div>
+          <div class="stat-label">Ouvintes</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-years" class="stat-num">10</div>
+          <div class="stat-label">Anos no ar</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-states" class="stat-num">24h</div>
+          <div class="stat-label">Programação</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-cities" class="stat-num">120+</div>
+          <div class="stat-label">Parceiros</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    function applyAboutConfig() {
+      const config = ADMIN_DATA.load('about_config');
+      if (!config) return;
+
+      const tag = document.getElementById('about-tag');
+      const mainText = document.getElementById('about-main-text');
+      const listeners = document.getElementById('stat-listeners');
+      const years = document.getElementById('stat-years');
+      const states = document.getElementById('stat-states');
+      const cities = document.getElementById('stat-cities');
+
+      if (config.title && tag) tag.textContent = config.title;
+      if (config.mainText && mainText) mainText.textContent = config.mainText;
+      
+      if (config.listeners && listeners) listeners.textContent = config.listeners;
+      if (config.yearsActive && years) years.textContent = config.yearsActive;
+      if (config.states && states) states.textContent = config.states;
+      if (config.cities && cities) cities.textContent = config.cities;
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyAboutConfig();
+    }
+    window.addEventListener('adminDataReady', applyAboutConfig);
+  })();
+</script>

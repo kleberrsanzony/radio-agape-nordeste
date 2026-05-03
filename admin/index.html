@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Rádio Ágape</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/admin.css">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-view" class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-logo">📻 Ágape Admin</div>
+            <p class="auth-subtitle">Acesso restrito à diretoria e equipe</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="login-email" required placeholder="admin@radioagape.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary" id="login-btn">Entrar Seguramente</button>
+                <div id="login-error" class="alert error" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-view" class="dashboard-wrapper" style="display: none;">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📻 Ágape Admin</h2>
+                <span class="badge">PRODUÇÃO</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-target="tab-player">▶️ Player (Rádio Web)</button>
+                <button class="nav-item" data-target="tab-schedule">📅 Programação</button>
+                <button class="nav-item" data-target="tab-news">📰 Notícias</button>
+                <button class="nav-item" data-target="tab-programs">📻 Programas (Cards)</button>
+                <button class="nav-item" data-target="tab-music">🎵 Top Músicas</button>
+                <button class="nav-item" data-target="tab-ads">💼 Anúncios</button>
+                <button class="nav-item" data-target="tab-config">⚙️ Config. Geral</button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="user-email-display">admin...</span>
+                </div>
+                <button id="logout-btn" class="btn-outline">Sair / Logout</button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <header class="content-header">
+                <h1 id="current-tab-title">Configuração do Player</h1>
+                <a href="../index.html" target="_blank" class="btn-secondary">Ver Site Público ↗</a>
+            </header>
+            
+            <div id="notification-area"></div>
+
+            <!-- TAB: PLAYER -->
+            <section id="tab-player" class="tab-pane active">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Streaming e Player ao Vivo</h3>
+                        <p>Configure o link do servidor da sua Rádio Web (Icecast/Shoutcast) e os textos do player inferior.</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-player">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Título do Player</label>
+                                    <input type="text" id="player-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Descrição (Nome do Locutor ou Programa)</label>
+                                    <input type="text" id="player-desc" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>URL do Stream (Rádio Web)</label>
+                                <input type="url" id="player-stream" required placeholder="https://ip-do-servidor:porta/stream">
+                                <small>Certifique-se de que a URL seja HTTPS.</small>
+                            </div>
+                            <div class="form-row align-items-center">
+                                <div class="form-group checkbox-group">
+                                    <input type="checkbox" id="player-volume">
+                                    <label for="player-volume">Mostrar Controle de Volume no Site</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">Salvar Configurações</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: SCHEDULE -->
+            <section id="tab-schedule" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Grade de Programação</h3>
+                        <p>Adicione ou remova programas da grade diária da rádio.</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-schedule" class="mb-4">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Dia da Semana</label>
+                                    <select id="sch-day" required>
+                                        <option value="0">Segunda-feira</option>
+                                        <option value="1">Terça-feira</option>
+                                        <option value="2">Quarta-feira</option>
+                                        <option value="3">Quinta-feira</option>
+                                        <option value="4">Sexta-feira</option>
+                                        <option value="5">Sábado</option>
+                                        <option value="6">Domingo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Horário (Início)</label>
+                                    <input type="time" id="sch-time" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nome do Programa</label>
+                                    <input type="text" id="sch-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Apresentador</label>
+                                    <input type="text" id="sch-presenter" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Duração (minutos)</label>
+                                    <input type="number" id="sch-duration" value="60" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">Adicionar à Grade</button>
+                        </form>
+                        
+                        <div class="table-responsive">
+                            <table class="admin-table" id="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th>Dia</th>
+                                        <th>Horário</th>
+                                        <th>Programa</th>
+                                        <th>Apresentador</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Preenchido via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: NEWS -->
+            <section id="tab-news" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Notícias e Destaques</h3>
+                        <p>Publique artigos no site.</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-news" class="mb-4">
+                            <div class="form-group">
+                                <label>Título da Notícia</label>
+                                <input type="text" id="news-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Conteúdo</label>
+                                <textarea id="news-content" rows="4" required></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Categoria</label>
+                                    <input type="text" id="news-category" value="Geral">
+                                </div>
+                                <div class="form-group">
+                                    <label>Autor</label>
+                                    <input type="text" id="news-author" value="Equipe Ágape">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Imagem de Capa</label>
+                                <input type="file" id="news-image" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Publicar Notícia</button>
+                        </form>
+                        <div id="news-list" class="list-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: PROGRAMS -->
+            <section id="tab-programs" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Programas (Cards na Home)</h3>
+                        <p>Gerencie os cards grandes de programas que aparecem na página principal.</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-programs" class="mb-4">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nome do Programa</label>
+                                    <input type="text" id="prog-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Texto de Horário (Ex: Seg a Sex 07h)</label>
+                                    <input type="text" id="prog-schedule" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea id="prog-desc" rows="2" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Imagem do Locutor/Programa</label>
+                                <input type="file" id="prog-image" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Adicionar Programa</button>
+                        </form>
+                        <div id="programs-list" class="list-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: MUSIC -->
+            <section id="tab-music" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Top Músicas</h3>
+                        <p>Gerencie as músicas em destaque (Top 6).</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-music" class="mb-4">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Posição (1 a 6)</label>
+                                    <input type="number" id="music-position" min="1" max="6" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nome da Música</label>
+                                    <input type="text" id="music-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Artista</label>
+                                    <input type="text" id="music-artist" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Capa do Álbum</label>
+                                <input type="file" id="music-image" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Adicionar Música</button>
+                        </form>
+                        <div id="music-list" class="list-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: ADS -->
+            <section id="tab-ads" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Planos de Publicidade</h3>
+                        <p>Gerencie os pacotes e opções de anúncios para empresas.</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-ads" class="mb-4">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nome do Plano (Ex: Patrocínio Master)</label>
+                                    <input type="text" id="ads-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Preço ou Chamada (Ex: R$ 500/mês)</label>
+                                    <input type="text" id="ads-price" required>
+                                </div>
+                            </div>
+                            <div class="form-row align-items-center mb-3">
+                                <div class="form-group checkbox-group">
+                                    <input type="checkbox" id="ads-popular">
+                                    <label for="ads-popular" style="margin-bottom:0;">Marcar como Plano Destaque</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">Adicionar Plano</button>
+                        </form>
+                        <div id="ads-list" class="list-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: CONFIG -->
+            <section id="tab-config" class="tab-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Configurações Gerais (Contatos)</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-config">
+                            <div class="form-group">
+                                <label>E-mail de Contato</label>
+                                <input type="email" id="config-email">
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone / WhatsApp</label>
+                                <input type="text" id="config-phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Instagram (Apenas @usuario)</label>
+                                <input type="text" id="config-instagram">
+                            </div>
+                            <button type="submit" class="btn-primary">Salvar Contatos</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Scripts de Cliente Global e Autenticação -->
+    <script src="../assets/scripts/supabase-client.js"></script>
+    <script src="./scripts/auth.js"></script>
+    <script src="./scripts/admin.js"></script>
+    <script src="./modules/schedule.js"></script>
+    <script src="./modules/news.js"></script>
+    <script src="./modules/programs.js"></script>
+    <script src="./modules/music.js"></script>
+    <script src="./modules/ads.js"></script>
+    <script src="./modules/config.js"></script>
+
+</body>
+</html>

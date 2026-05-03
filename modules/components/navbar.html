@@ -1,0 +1,62 @@
+<!-- NAVBAR COMPONENT -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div id="nav-logo-container" class="nav-logo-icon">✦</div>
+    <span id="nav-logo-text" class="nav-logo-text">Rádio Ágape</span>
+  </a>
+  <ul id="nav-links-list" class="nav-links">
+    <li><a href="#programacao">Programação</a></li>
+    <li><a href="#musicas">Músicas</a></li>
+    <li><a href="#programas">Programas</a></li>
+    <li><a href="#noticias">Notícias</a></li>
+    <li><a href="#publicidade">Anuncie</a></li>
+    <li><a href="#contato" class="nav-cta">Contato</a></li>
+  </ul>
+</nav>
+
+<script>
+  (function() {
+    function applyNavbarConfig() {
+      const config = ADMIN_DATA.load('navbar_config');
+      if (!config) return;
+
+      const logoContainer = document.getElementById('nav-logo-container');
+      const logoText = document.getElementById('nav-logo-text');
+      const linksList = document.getElementById('nav-links-list');
+
+      if (config.logoUrl && logoContainer) {
+        logoContainer.innerHTML = `<img src="${config.logoUrl}" alt="Logo" style="height: 100%; border-radius: 50%;">`;
+      }
+
+      if (config.radioTitle && logoText) {
+        logoText.textContent = config.radioTitle;
+      }
+
+      if (config.links && config.links.length > 0 && linksList) {
+        linksList.innerHTML = '';
+        config.links.forEach((link, index) => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = link.url;
+          a.textContent = link.text;
+          
+          // Se for o último link e tiver mais de 3, adiciona classe CTA
+          if (index === config.links.length - 1 && config.links.length > 3) {
+            a.className = 'nav-cta';
+          }
+          
+          li.appendChild(a);
+          linksList.appendChild(li);
+        });
+      }
+    }
+
+    // Tenta aplicar imediatamente se o ADMIN_DATA já estiver pronto
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyNavbarConfig();
+    }
+
+    // Também escuta o evento de prontidão
+    window.addEventListener('adminDataReady', applyNavbarConfig);
+  })();
+</script>

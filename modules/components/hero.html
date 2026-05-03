@@ -1,0 +1,66 @@
+<!-- HERO SECTION COMPONENT -->
+<section id="hero-section" class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">
+    <span>Ao Vivo Agora</span>
+  </div>
+  <h1 id="hero-title-text" class="hero-title">
+    A Voz que Vem<br>
+    <em>do Céu</em>
+  </h1>
+  <p id="hero-subtitle-text" class="hero-subtitle">
+    Música gospel, pregações, programas e louvor ao vivo — 24 horas por dia, 7 dias por semana. Conecte sua alma.
+  </p>
+  <div class="hero-actions">
+    <a id="hero-primary-btn" href="#" class="btn-primary">
+      ▶ Ouvir ao Vivo
+    </a>
+    <a id="hero-secondary-btn" href="#programacao" class="btn-secondary">Ver Programação</a>
+  </div>
+</section>
+
+<script>
+  (function() {
+    function applyHeroConfig() {
+      const config = ADMIN_DATA.load('hero_config');
+      if (!config) return;
+
+      const section = document.getElementById('hero-section');
+      const title = document.getElementById('hero-title-text');
+      const subtitle = document.getElementById('hero-subtitle-text');
+      const primaryBtn = document.getElementById('hero-primary-btn');
+
+      if (config.title && title) {
+        title.innerHTML = config.title.replace('\n', '<br>');
+      }
+
+      if (config.subtitle && subtitle) {
+        subtitle.textContent = config.subtitle;
+      }
+
+      if (config.btnText && primaryBtn) {
+        primaryBtn.textContent = config.btnText;
+      }
+
+      if (config.btnLink && primaryBtn) {
+        primaryBtn.href = config.btnLink;
+      }
+
+      if (section) {
+        if (config.image) {
+          section.style.backgroundImage = `url(${config.image})`;
+          section.style.backgroundSize = 'cover';
+          section.style.backgroundPosition = 'center';
+        } else if (config.color) {
+          // Use color as a subtle overlay or background if no image
+          section.style.backgroundColor = config.color + '22'; // 22 is ~13% opacity
+        }
+      }
+    }
+
+    if (window.ADMIN_DATA && typeof ADMIN_DATA.load === 'function') {
+      applyHeroConfig();
+    }
+    window.addEventListener('adminDataReady', applyHeroConfig);
+  })();
+</script>
